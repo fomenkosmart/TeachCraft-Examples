@@ -1,7 +1,7 @@
 import mcpi.minecraft as minecraft
 
-server_address = "199.96.85.3"
-my_player_name = "steve"
+server_address = "127.0.0.1"
+my_player_name = "seanybob"
 
 # Open a connection to the minecraft server
 mc = minecraft.Minecraft.create(address=server_address, name=my_player_name)
@@ -12,7 +12,7 @@ block = 57
 pos = mc.player.getPos()
 
 # This variable is the key to the algorithm
-pyramid_height = 22
+pyramid_height = 220
 
 for i in range(pyramid_height):
     x = pos.x + i
