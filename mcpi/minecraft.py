@@ -79,6 +79,12 @@ class CmdPositioner:
         events = [e for e in s.split("|") if e]
         return [BlockEvent.Hit(*map(int, e.split(","))) for e in events]
 
+    def pollChatPosts(self, id):
+        """Triggered by posts to chat => [ChatEvent]"""
+        s = self.conn.sendReceive(self.pkg + ".events.chat.posts", id)
+        events = [e for e in s.split("|") if e]
+        return [ChatEvent.Post(int(e[:e.find(",")]), e[e.find(",") + 1:]) for e in events]
+
 
 class CmdEntity(CmdPositioner):
     """Methods for entities"""
@@ -107,8 +113,10 @@ class CmdPlayer(CmdPositioner):
         return CmdPositioner.getRotation(self, self.name)
     def getPitch(self):
         return CmdPositioner.getPitch(self, self.name)
-    def pollProjectileHits2(self):
+    def pollProjectileHits(self):
         return CmdPositioner.pollProjectileHits(self, self.name)
+    def pollChatPosts(self):
+        return CmdPositioner.pollChatPosts(self, self.name)
 
 class CmdCamera:
     def __init__(self, connection):
@@ -145,18 +153,6 @@ class CmdEvents:
         s = self.conn.sendReceive("events.block.hits")
         events = [e for e in s.split("|") if e]
         return [BlockEvent.Hit(*map(int, e.split(","))) for e in events]
-
-    def pollProjectileHits(self, id):
-        """Only triggered by projectiles => [BlockEvent]"""
-        s = self.conn.sendReceive("events.projectile.hits", id)
-        events = [e for e in s.split("|") if e]
-        return [BlockEvent.Hit(*map(int, e.split(","))) for e in events]
-
-    def pollChatPosts(self):
-        """Triggered by posts to chat => [ChatEvent]"""
-        s = self.conn.sendReceive("events.chat.posts")
-        events = [e for e in s.split("|") if e]
-        return [ChatEvent.Post(int(e[:e.find(",")]), e[e.find(",") + 1:]) for e in events]
 
 class Minecraft:
     """The main class to interact with a running instance of Minecraft Pi."""
